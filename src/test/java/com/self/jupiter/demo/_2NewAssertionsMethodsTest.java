@@ -1,14 +1,12 @@
 package com.self.jupiter.demo;
 
-import org.junit.jupiter.api.Disabled;
+import com.self.jupiter.bean.Employee;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.time.Duration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class _2NewAssertionsMethodsTest {
@@ -39,20 +37,29 @@ public class _2NewAssertionsMethodsTest {
         return "This should never happen";
     }
 
+    @Test
+    void assertEveryAttributeOfEmployee() {
+        Employee employee = new Employee(100L, "test"); // lets say we get it from a service
+        assertAll(
+                () -> assertEquals("test", employee.getName()),
+                () -> assertEquals(100L, employee.getId())
+        );
+    }
+
 
     @Test
-    void timeoutOkay() {
-        assertTimeout(Duration.ofMillis(100), () -> System.out.println("Hello"));
+    void timeout() {
+        assertTimeout(Duration.ofMillis(100), () -> System.out.println("Hello here"));
     }
 
     @Test
-    @Disabled("Disable until demo")
+        // runs in the same thread, executes the process and tells exceeds by how much
     void timeoutExceeded() {
         assertTimeout(Duration.ofMillis(100), () -> Thread.sleep(200));
     }
 
     @Test
-    @Disabled("Disable until demo")
+        // runs in a different thread, kills it if it takes more time
     void timeoutExceededWithPreemption() {
         assertTimeoutPreemptively(Duration.ofMillis(100), () -> Thread.sleep(200));
     }
